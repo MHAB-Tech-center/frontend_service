@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(import.meta.env.VITE_LOCAL_STORAGE_PREFIX);
     setUser(null);
     setIsAuthenticated(false);
-    window.location.href = "/auth/login";
+    window.location.href = "/login";
   };
 
   useEffect(() => {
