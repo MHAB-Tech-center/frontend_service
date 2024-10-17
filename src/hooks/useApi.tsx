@@ -32,6 +32,14 @@ export const login = async (email: string, password: string) => {
   return api.post("/auth/login", { email, password });
 };
 
+export const verifyLogin = async (
+  email: string,
+  password: string,
+  activationCode: number
+) => {
+  return api.post("/auth/verify-login", { email, password, activationCode });
+};
+
 export const forgotPassword = async (email: string) => {
   return api.get("/auth/get_code/" + email);
 };
@@ -68,4 +76,12 @@ export const useOnLoad = () => {
     error,
     onLoad,
   };
+};
+
+export const getAllInspectors = async () => {
+  return api.get("/inspectors/all");
+};
+
+export const inviteInspector = async (email: string) => {
+  return api.post("/inspectors/invite", { email });
 };

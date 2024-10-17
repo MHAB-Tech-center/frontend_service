@@ -18,4 +18,9 @@ export const loginPasswordState = atom<string>({
   default: "",
 });
 
+export const paginationOptionsState = atom({
+  key: "paginationOptionsState",
+  default: 1,
+});
+
 export {};

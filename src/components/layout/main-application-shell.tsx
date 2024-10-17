@@ -6,13 +6,49 @@ import { Button } from "@/components/ui/base/button";
 import { useOnLoad } from "@/hooks/useApi";
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/base/dropdown-menu";
+
+const sidebarItems = [
+  { to: "/", icon: BarChart3, label: "Overview" },
+  { to: "/report", icon: FileText, label: "Report" },
+  { to: "/inspectors", icon: Users, label: "Inspectors" },
+];
+
+const Sidebar = () => {
+  const location = useLocation();
+
+  return (
+    <nav className="mt-8 space-y-2">
+      {sidebarItems.map((item, index) => {
+        const isActive =
+          location.pathname === item.to ||
+          (location.pathname.startsWith(item.to) &&
+            location.pathname[item.to.length] === "/");
+
+        return (
+          <Link
+            key={index}
+            to={item.to}
+            className={`flex items-center space-x-2 rounded-lg px-4 py-2 ${
+              isActive
+                ? "bg-blue-500 text-white"
+                : "text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            <item.icon className="h-5 w-5" />
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+};
 
 export default function MainAppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -49,29 +85,7 @@ export default function MainAppShell() {
             <span className="sr-only">Close sidebar</span>
           </Button>
         </div>
-        <nav className="mt-8 space-y-2">
-          <Link
-            to="#"
-            className="flex items-center space-x-2 rounded-lg bg-blue-500 px-4 py-2 text-white"
-          >
-            <BarChart3 className="h-5 w-5" />
-            <span>Overview</span>
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center space-x-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
-          >
-            <FileText className="h-5 w-5" />
-            <span>Report</span>
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center space-x-2 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
-          >
-            <Users className="h-5 w-5" />
-            <span>Employment</span>
-          </Link>
-        </nav>
+        <Sidebar />
       </aside>
 
       {/* Main content */}
@@ -97,7 +111,7 @@ export default function MainAppShell() {
                   <UserIcon className="h-6 w-6" />
                   <div className="flex flex-col gap-0 cursor-pointer">
                     <div className="text-sm font-semibold">
-                      {(user as any ?? {}).roles
+                      {((user as any) ?? {}).roles
                         ?.map((role: any) => role.role_name)
                         .join(", ")}
                     </div>

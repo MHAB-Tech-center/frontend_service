@@ -1,5 +1,8 @@
-import LoginBG from "@/assets/login-bg.png";
-import { loginEmailState, loginPasswordState } from "@/atoms";
+"use client";
+
+import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { toast } from "react-toastify";
 import { Button } from "@/components/ui/base/button";
 import {
   Card,
@@ -8,28 +11,42 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/base/card";
-import { Input } from "@/components/ui/base/input";
+import { loginEmailState, loginPasswordState } from "@/atoms";
 import useAuth from "@/hooks/useAuth";
 import { getErrorMessage } from "@/lib/utils";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { useRecoilState } from "recoil";
+import LoginBG from "@/assets/login-bg.png";
+import Logo from "@/assets/rmb-logo.png";
+import { Input } from "@/components/ui/base/input";
 
-export const description =
-  "A sign up form with first name, last name, email and password inside a card. There's an option to sign up with GitHub and a link to login if you already have an account";
-
-export default function LoginForm() {
+export default function EnhancedLoginForm() {
   const [email, setEmail] = useRecoilState(loginEmailState);
   const [password, setPassword] = useRecoilState(loginPasswordState);
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const [showOtpForm, setShowOtpForm] = useState(false);
+  const { login, verifyOTP } = useAuth();
 
-  const onSubmit = async () => {
+  const handleEmailPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       setLoading(true);
       await login(email, password);
+      toast.success("OTP sent to your email");
+      setShowOtpForm(true);
     } catch (error) {
-      toast.error(getErrorMessage(error));
+      toast.error("1 " + getErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      await verifyOTP(email, password, Number(otp));
+    } catch (error) {
+      toast.error("2 "+getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -38,19 +55,26 @@ export default function LoginForm() {
   return (
     <div
       className="h-screen flex items-center justify-center"
-      style={{ backgroundImage: `url(${LoginBG})`, backgroundSize: "cover" }}
+      style={{
+        backgroundImage: `url(${LoginBG})`,
+        backgroundSize: "cover",
+      }}
     >
-      <Card className="mx-auto max-w-sm p-4 rounded-xl">
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Sign in</CardTitle>
-          <CardDescription>
-            Managing all inspection manual report in one place
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              {/* <Label htmlFor="email">Email</Label> */}
+      <div className="relative w-full max-w-sm overflow-hidden">
+        <Card
+          className={`p-4 rounded-xl transition-transform duration-300 ease-in-out ${
+            showOtpForm ? "-translate-x-full" : "translate-x-0"
+          }`}
+        >
+          <CardHeader className="text-center">
+            <img src={Logo} alt="Logo" className="h-20 w-auto mx-auto" />
+            <CardTitle className="text-xl">Sign in</CardTitle>
+            <CardDescription>
+              Managing all inspection manual report in one place
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleEmailPasswordSubmit} className="grid gap-4">
               <Input
                 id="email"
                 type="email"
@@ -59,9 +83,6 @@ export default function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </div>
-            <div className="grid gap-2">
-              {/* <Label htmlFor="password">Password</Label> */}
               <Input
                 id="password"
                 type="password"
@@ -70,18 +91,50 @@ export default function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-            </div>
-            <Button
-              type="submit"
-              className="w-full"
-              onClick={onSubmit}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "Sign in"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Loading..." : "Sign in"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card
+          className={`p-4 rounded-xl absolute top-0 left-full w-full transition-transform duration-300 ease-in-out ${
+            showOtpForm ? "-translate-x-full" : "translate-x-0"
+          }`}
+        >
+          <CardHeader className="text-center">
+            <img src={Logo} alt="Logo" className="h-20 w-auto mx-auto" />
+            <CardTitle className="text-xl">Enter OTP</CardTitle>
+            <CardDescription>
+              Please enter the OTP sent to your email
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleOtpSubmit} className="grid gap-4">
+              <Input
+                id="otp"
+                type="text"
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setOtp(e.target.value)
+                }
+              />
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Verifying..." : "Verify OTP"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowOtpForm(false)}
+                disabled={loading}
+              >
+                Back to Login
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

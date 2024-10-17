@@ -6,6 +6,8 @@ import MainAppShell from "./components/layout/main-application-shell";
 const Index = lazy(() => import("@/pages/index"));
 const LoginForm = lazy(() => import("@/pages/login"));
 const Logout = lazy(() => import("@/pages/logout"));
+const Report = lazy(() => import("@/pages/report"));
+const Inspectors = lazy(() => import("@/pages/inspectors"));
 
 const AppRoutes = () => {
   return (
@@ -36,6 +38,9 @@ const AppRoutes = () => {
           }
         >
           <Route index element={<Index />} />
+          <Route path="/report" element={<Report />} />
+          <Route path="/inspectors" element={<Inspectors />} />
+
         </Route>
         {/* <Route path="/tmp" element={<ApplicationShell />} /> */}
       </Routes>
