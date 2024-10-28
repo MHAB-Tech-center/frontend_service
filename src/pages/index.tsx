@@ -1,7 +1,7 @@
-import React from "react";
+import { Navigate } from "react-router-dom";
 
 const Index = () => {
-  return <div>Index</div>;
+  return <Navigate to="/report" />;
 };
 
 export default Index;

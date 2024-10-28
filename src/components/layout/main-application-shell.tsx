@@ -89,7 +89,7 @@ export default function MainAppShell() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1">
+      <main className="flex-1 bg-gray-100">
         <div className="flex items-center justify-between bg-white p-4 shadow-md lg:hidden">
           <Button
             variant="ghost"
@@ -101,7 +101,7 @@ export default function MainAppShell() {
           </Button>
           <h1 className="text-xl font-bold">Inspection Manual Report</h1>
         </div>
-        <div className="p-8">
+        <div className="p-8 w-full">
           <div className="mb-8 flex items-center justify-between rounded-md bg-white py-6 px-4">
             <h2 className="text-2xl font-semibold">Overview</h2>
 
@@ -133,7 +133,7 @@ export default function MainAppShell() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="rounded-lg bg-white p-6 shadow">
+          <div className="rounded-lg bg-white p-6 shadow min-h-[80vh] ">
             <Outlet />
           </div>
         </div>

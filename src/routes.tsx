@@ -7,6 +7,7 @@ const Index = lazy(() => import("@/pages/index"));
 const LoginForm = lazy(() => import("@/pages/login"));
 const Logout = lazy(() => import("@/pages/logout"));
 const Report = lazy(() => import("@/pages/report"));
+const Reports = lazy(() => import("@/pages/inspection"));
 const Inspectors = lazy(() => import("@/pages/inspectors"));
 
 const AppRoutes = () => {
@@ -38,9 +39,9 @@ const AppRoutes = () => {
           }
         >
           <Route index element={<Index />} />
-          <Route path="/report" element={<Report />} />
+          <Route path="/report" element={<Reports />} />
+          <Route path="/report/:id" element={<Report />} />
           <Route path="/inspectors" element={<Inspectors />} />
-
         </Route>
         {/* <Route path="/tmp" element={<ApplicationShell />} /> */}
       </Routes>

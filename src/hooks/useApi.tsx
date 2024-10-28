@@ -21,7 +21,7 @@ api.interceptors.response.use(
       toast.error(
         "You are not authorized to perform this action. Try logging in again."
       );
-      window.location.href = "/auth/login";
+      window.location.href = "/login";
       // Optionally, you can also perform other actions like redirecting to a login page
     }
     return Promise.reject(error);
@@ -84,4 +84,16 @@ export const getAllInspectors = async () => {
 
 export const inviteInspector = async (email: string) => {
   return api.post("/inspectors/invite", { email });
+};
+
+export const getAllInspections = async () => {
+  return api.get("/inspections/plans/all");
+};
+
+export const getInspectionInfo = async (id: string) => {
+  return api.get(`/inspections/categories/plan-id/${id}`);
+};
+
+export const addFeedback = async (planId: string, reviewMessage: string) => {
+  return api.put("/inspections/review", { planId, reviewMessage });
 };

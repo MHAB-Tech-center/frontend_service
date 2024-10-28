@@ -43,7 +43,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log(import.meta.env.DEV && response);
     } catch (error: any) {
       console.log(import.meta.env.DEV && error);
-      toast.error("3 " + getErrorMessage(error));
+      // toast.error(getErrorMessage(error));
+      throw error;
     } finally {
       setLoading(false);
     }

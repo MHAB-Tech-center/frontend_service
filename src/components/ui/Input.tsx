@@ -4,7 +4,7 @@ import { Label } from "./base/label";
 import { IconType } from "react-icons";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Switch } from "./base/switch";
 
 interface InputProps {
@@ -14,12 +14,16 @@ interface InputProps {
   type: string;
   Icon?: IconType | React.ComponentType<any>;
   value?: string | any;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   hideToggle?: string;
   textColor?: string;
   Component?: React.ComponentType<{
     value?: string;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void;
   }>;
   [key: string]: any;
 }
@@ -43,7 +47,13 @@ export function ComplexInput({
 
   const showInput = hideToggle ? toggleVisibility : true;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    setInternalValue(value || "");
+  }, [value]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setInternalValue(e.target.value);
     if (onChange) {
       onChange(e);
@@ -84,19 +94,34 @@ export function ComplexInput({
           }`}
         >
           {Icon && <Icon className="mr-2" />}
-          <BaseInput
-            type={showPassword ? "text" : type}
-            id={id}
-            placeholder={label || placeholder}
-            value={internalValue}
-            onChange={handleChange}
-            className={
-              Icon || type === "password"
-                ? "border-none focus-visible:outline-none focus:outline-none focus-visible:!ring-0"
-                : ""
-            }
-            {...props}
-          />
+          {type === "textarea" ? (
+            <textarea
+              id={id}
+              placeholder={label || placeholder}
+              value={internalValue}
+              onChange={handleChange}
+              className="w-full rounded-md border-2 border-gray-300 p-2 min-h-48 focus-visible:outline-none focus:outline-none focus-visible:!ring-0"
+              {...props}
+            />
+          ) : (
+            <BaseInput
+              type={showPassword ? "text" : type}
+              id={id}
+              placeholder={label || placeholder}
+              value={
+                type === "date" && internalValue
+                  ? new Date(internalValue).toISOString().split("T")[0]
+                  : internalValue
+              }
+              onChange={handleChange}
+              className={
+                Icon || type === "password"
+                  ? "border-none focus-visible:outline-none focus:outline-none focus-visible:!ring-0"
+                  : ""
+              }
+              {...props}
+            />
+          )}
           {type === "password" && (
             <button
               type="button"

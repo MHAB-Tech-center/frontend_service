@@ -34,7 +34,7 @@ export default function EnhancedLoginForm() {
       toast.success("OTP sent to your email");
       setShowOtpForm(true);
     } catch (error) {
-      toast.error("1 " + getErrorMessage(error));
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
