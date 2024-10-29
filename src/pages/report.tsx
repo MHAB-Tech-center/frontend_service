@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 const ReportPage = () => {
   const { id: reportId } = useParams();
   const [loading, setLoading] = useState(false);
-  
+
   const [inspectionInfo, setInspectionInfo] = useState<{
     identification: any;
     records: any[];
@@ -48,12 +48,29 @@ const ReportPage = () => {
     fetchReport();
   }, []);
 
+  useEffect(() => {
+    const onBeforeUnload = (ev: Event) => {
+      ev.preventDefault();
+      ev.returnValue = true;
+      return true;
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+    };
+  }, []);
+
   if (!reportId) {
     return <Navigate to="/report" />;
   }
 
   if (loading) {
-    return <div className="text-center h-96 flex justify-center items-center">Loading...</div>;
+    return (
+      <div className="text-center h-96 flex justify-center items-center">
+        Loading...
+      </div>
+    );
   }
 
   return (
@@ -80,7 +97,7 @@ const ReportPage = () => {
             className="data-[state=active]:bg-primary data-[state=active]:text-white px-6 py-3 bg-primary-50 rounded-md"
             value="detailed-inspection-report-1"
           >
-            Detailed Inspection Report 1
+            Detailed Inspection Report
           </TabsTrigger>
         </TabsList>
 
@@ -88,7 +105,7 @@ const ReportPage = () => {
           <IdentificationTab identification={inspectionInfo.identification} />
         </TabsContent>
         <TabsContent value="summary-report">
-          <SummaryReport {...inspectionInfo.summaryReport}/>
+          <SummaryReport {...inspectionInfo.summaryReport} />
         </TabsContent>
         <TabsContent value="detailed-inspection-report-1">
           <DetailedReport report={inspectionInfo.records} />

@@ -25,6 +25,7 @@ interface InputProps {
       e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => void;
   }>;
+  error?: string; // Add error prop
   [key: string]: any;
 }
 
@@ -39,6 +40,7 @@ export function ComplexInput({
   hideToggle,
   textColor,
   Component,
+  error, // Destructure error prop
   ...props
 }: InputProps) {
   const [internalValue, setInternalValue] = useState(value || "");
@@ -116,7 +118,7 @@ export function ComplexInput({
               onChange={handleChange}
               className={
                 Icon || type === "password"
-                  ? "border-none focus-visible:outline-none focus:outline-none focus-visible:!ring-0"
+                  ? "border-none focus-visible:outline-none focus:outline-none focus-visible:!ring-0 my-1"
                   : ""
               }
               {...props}
@@ -134,6 +136,8 @@ export function ComplexInput({
         </div>
       )}
       {showInput && Component && <Component {...{ value, onChange }} />}
+      {error && <p className="text-red-500 mt-1">{error}</p>}{" "}
+      {/* Display error message */}
     </div>
   );
 }

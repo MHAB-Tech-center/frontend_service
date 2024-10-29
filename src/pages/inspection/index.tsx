@@ -1,10 +1,9 @@
-import NewInspectorModal from "@/components/modals/new-inspector";
 import { Button } from "@/components/ui/base/button";
 import { Column } from "@/components/ui/table/Table";
 import TableWrapper from "@/components/ui/table/TableWrapper";
 import { getAllInspections } from "@/hooks/useApi";
 import { getErrorMessage } from "@/lib/utils";
-import { EyeIcon, FolderMinusIcon, PencilIcon } from "lucide-react";
+import { EyeIcon, PencilIcon } from "lucide-react";
 import { ButtonHTMLAttributes, useEffect, useState } from "react";
 import { IconType } from "react-icons/lib";
 import { useNavigate } from "react-router-dom";
@@ -103,7 +102,6 @@ const Reports = () => {
   const [inspections, setInspections] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const fetchInspections = async () => {
     setLoading(true);
     try {
@@ -120,6 +118,7 @@ const Reports = () => {
   useEffect(() => {
     fetchInspections();
   }, []);
+
   return (
     <div>
       <div className="w-full flex justify-end">
@@ -132,22 +131,21 @@ const Reports = () => {
         filterableByDate
         dateKey="created_at"
         className="min-w-[800px] overflow-x-auto"
-        //   onRowClick={(row) => navigate(`${row.id}`)}
-        emptyViewProps={{
-          icon: <FolderMinusIcon className="h-10 w-10" />,
-          message: "No Inspectors Yet?",
-          description: "Add new inspectors to start managing them.",
-          buttonLabel: "New Inspector",
-          buttonAction: () => {
-            // navigate("/expenses/new");
-            console.log("New Inspector");
-          },
-        }}
-        actions={[<NewInspectorModal />]}
+        // actions={[<NewInspectorModal />]}
         loading={loading}
         onRowClick={(row) => {
           navigate(`/report/${row.id}`);
         }}
+        // emptyViewProps={{
+        //   icon: <FolderMinusIcon className="h-10 w-10" />,
+        //   message: "No Inspectors Yet?",
+        //   description: "Add new inspectors to start managing them.",
+        //   buttonLabel: "New Inspector",
+        //   buttonAction: () => {
+        //     // navigate("/expenses/new");
+        //     console.log("New Inspector");
+        //   },
+        // }}
         // reset={reset}
         // filters={tableFilters}
         // errorFetching={errorFetchingCases}

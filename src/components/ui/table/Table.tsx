@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import cx from 'clsx';
-import { Pagination, rem, Table } from "@mantine/core";
-import SortableTH from "./SortableTH.tsx";
-import EmptyView from "./EmptyView.tsx";
-import { useRecoilState } from "recoil";
 import { paginationOptionsState } from "@/atoms";
-import { Checkbox } from "../base/checkbox.tsx";
-import { useEffect } from "react";
 import { cn, getObjValue } from "@/lib/utils.ts";
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { Pagination, rem, Table } from "@mantine/core";
+import { useRecoilState } from "recoil";
+import { Checkbox } from "../base/checkbox.tsx";
+import EmptyView from "./EmptyView.tsx";
+import SortableTH from "./SortableTH.tsx";
 
 export interface RowContext<T = any> {
   selected: boolean;
