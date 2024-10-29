@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/base/button";
 import Dialog from "@/components/ui/Dialog";
 import { addFeedback } from "@/hooks/useApi";
 import { getErrorMessage } from "@/lib/utils";
-import { MessageCircle, PlusIcon } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import React from "react";
 import { toast } from "react-toastify";
 import { ComplexInput } from "../ui/Input";
@@ -24,7 +24,7 @@ const FeedbackModal = (props: FeedbackModalProps) => {
     try {
       setLoading(true);
       await addFeedback(formData.planId, formData.review);
-      toast.success("Inspector invited successfully");
+      toast.success("Feedback sent successfully");
       setOpen(false);
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -39,9 +39,17 @@ const FeedbackModal = (props: FeedbackModalProps) => {
       onClose={setOpen}
       contentClassName="!max-w-lg"
       trigger={
-        <Button className="text-black rounded-xl !bg-primary-100 hover:!bg-primary-200 ">
-          <MessageCircle className="w-6 h-6" />
-          &nbsp; Feedback
+        <Button className="text-black rounded-xl !bg-primary-100 hover:!bg-primary-200 flex flex-col h-fit">
+          <span className="flex items-center">
+            <MessageCircle className="w-6 h-6" />
+            &nbsp; Feedback
+          </span>
+          {formData.review && (
+            <span className="text-xs text-gray-400 flex items-center gap-2">
+              <span className="h-2 w-2 bg-orange-300 rounded-full" />
+              <span>unsaved feedback</span>
+            </span>
+          )}
         </Button>
       }
       title="Send Feedback to the report"

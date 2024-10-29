@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
@@ -96,4 +97,12 @@ export const getInspectionInfo = async (id: string) => {
 
 export const addFeedback = async (planId: string, reviewMessage: string) => {
   return api.put("/inspections/review", { planId, reviewMessage });
+};
+
+export const setupRMBStaff = async (data: any) => {
+  return api.post("/rmb-staff", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
