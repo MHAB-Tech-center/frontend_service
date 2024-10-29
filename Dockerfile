@@ -8,14 +8,14 @@ WORKDIR /
 # where available (npm@5+)
 COPY ["package.json", "package-lock.json*", "./"]
 
-RUN npm install
+RUN pnpm install
 # If you are building your code for production
 # RUN npm ci --omit=dev
 
 # Bundle app source
 COPY . .
 
-RUN npm run build
+RUN pnpm run build
 
 EXPOSE 5173
 CMD [ "pnpm", "run" , "dev" ]
