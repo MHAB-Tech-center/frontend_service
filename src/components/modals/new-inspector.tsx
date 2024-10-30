@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/base/button";
 import Dialog from "@/components/ui/Dialog";
 import { PlusIcon } from "lucide-react";

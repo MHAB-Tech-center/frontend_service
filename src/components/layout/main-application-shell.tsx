@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { BarChart3, FileText, Menu, UserIcon, Users, X } from "lucide-react";
+import {
+  BarChart3,
+  FileText,
+  Menu,
+  User,
+  UserIcon,
+  UserRoundCog,
+  Users,
+  X,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/base/button";
 import { useOnLoad } from "@/hooks/useApi";
@@ -18,6 +26,8 @@ const sidebarItems = [
   { to: "/", icon: BarChart3, label: "Overview" },
   { to: "/report", icon: FileText, label: "Report" },
   { to: "/inspectors", icon: Users, label: "Inspectors" },
+  { to: "/roles", icon: User, label: "Roles" },
+  { to: "/rmb-staff", icon: UserRoundCog, label: "RMB Staff" },
 ];
 
 const Sidebar = () => {
@@ -64,7 +74,8 @@ export default function MainAppShell() {
     } else {
       onLoad();
     }
-  }, [isAuthenticated, onLoad, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, user]);
   return (
     <div className="relative flex min-h-screen bg-gray-100">
       {/* Sidebar */}

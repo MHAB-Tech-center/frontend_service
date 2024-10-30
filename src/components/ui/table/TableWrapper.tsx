@@ -336,6 +336,7 @@ const TableWrapper = ({
           pagination={pagination}
           onRowClick={onRowClick}
           emptyViewProps={emptyViewProps}
+          refresh={refresh}
         />
       )}
     </div>

@@ -1,20 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import cx from 'clsx';
-import { Pagination, rem, Table } from "@mantine/core";
-import SortableTH from "./SortableTH.tsx";
-import EmptyView from "./EmptyView.tsx";
-import { useRecoilState } from "recoil";
 import { paginationOptionsState } from "@/atoms";
-import { Checkbox } from "../base/checkbox.tsx";
-import { useEffect } from "react";
 import { cn, getObjValue } from "@/lib/utils.ts";
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { Pagination, rem, Table } from "@mantine/core";
+import { useRecoilState } from "recoil";
+import { Checkbox } from "../base/checkbox.tsx";
+import EmptyView from "./EmptyView.tsx";
+import SortableTH from "./SortableTH.tsx";
 
 export interface RowContext<T = any> {
   selected: boolean;
   value: string;
   row: T;
   rows: T[];
+  refresh?: () => void;
 }
 
 export interface Column<T = any> {
@@ -75,6 +74,7 @@ interface CustomTableProps {
     buttonLabel?: string;
     buttonAction?: () => void;
   };
+  refresh?: () => void;
 }
 
 export function CustomTable({
@@ -91,15 +91,16 @@ export function CustomTable({
   setPage = () => {},
   errorFetching = false,
   loading,
-  dateRange,
+  refresh,
   paginated = false,
   pagination,
   onRowClick,
   emptyViewProps,
 }: CustomTableProps) {
-  const [paginationOptions, setPaginationOpts] = useRecoilState(
-    paginationOptionsState
-  );
+  const [
+    paginationOptions,
+    // setPaginationOpts
+  ] = useRecoilState(paginationOptionsState);
 
   const toggleRow = (id: string) =>
     setSelection((current) =>
@@ -107,10 +108,10 @@ export function CustomTable({
         ? current.filter((item) => item !== id)
         : [...current, id]
     );
-  const toggleAll = () =>
-    setSelection((current) =>
-      current.length === data.length ? [] : data.map((item) => item.id)
-    );
+  // const toggleAll = () =>
+  //   setSelection((current) =>
+  //     current.length === data.length ? [] : data.map((item) => item.id)
+  //   );
   // console.log('sortedData', sortedData);
   const rows =
     //check if paginated is true
@@ -147,6 +148,7 @@ export function CustomTable({
                               row: item,
                               rows: data,
                               value: getObjValue(column.key, item)!,
+                              refresh,
                             }}
                           />
                         ) : (

@@ -36,7 +36,7 @@ const DetailedReport = (props: DetailedReportProps) => {
   };
   const findSectionRecords = (sectionId: string, report: any): any => {
     const toReturn =
-      getSections(report).find((section) => section.id === sectionId) || [];
+      getSections(report).find((section) => section.id === sectionId) || { records: [] };
     console.log("toReturn", toReturn);
     return toReturn.records;
   };

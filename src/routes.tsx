@@ -9,6 +9,9 @@ const Logout = lazy(() => import("@/pages/logout"));
 const Report = lazy(() => import("@/pages/report"));
 const Reports = lazy(() => import("@/pages/inspection"));
 const Inspectors = lazy(() => import("@/pages/inspectors"));
+const Roles = lazy(() => import("@/pages/roles"));
+const RMBRegister = lazy(() => import("@/pages/rmb-register"));
+const RMBStaff = lazy(() => import("@/pages/rmb-staff"));
 
 const AppRoutes = () => {
   return (
@@ -31,6 +34,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/register"
+          element={
+            <SuspenseWithLoader>
+              <RMBRegister />
+            </SuspenseWithLoader>
+          }
+        />
+        <Route
           path="/"
           element={
             <SuspenseWithLoader>
@@ -42,6 +53,8 @@ const AppRoutes = () => {
           <Route path="/report" element={<Reports />} />
           <Route path="/report/:id" element={<Report />} />
           <Route path="/inspectors" element={<Inspectors />} />
+          <Route path="/roles" element={<Roles />} />
+          <Route path="/rmb-staff" element={<RMBStaff />} />
         </Route>
         {/* <Route path="/tmp" element={<ApplicationShell />} /> */}
       </Routes>
