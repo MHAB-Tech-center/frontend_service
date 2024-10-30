@@ -1,7 +1,7 @@
 import NewRoleModal from "@/components/modals/new-role";
 import { Column } from "@/components/ui/table/Table";
 import TableWrapper from "@/components/ui/table/TableWrapper";
-import { getAllInspectors } from "@/hooks/useApi";
+import { getRoles } from "@/hooks/useApi";
 import { getErrorMessage } from "@/lib/utils";
 import { EyeIcon, FolderMinusIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { ButtonHTMLAttributes, useEffect, useState } from "react";
@@ -27,31 +27,22 @@ const IconButton: React.FC<IconButtonProps> = ({
 
 const rolesColumns: Column[] = [
   {
-    title: "Names",
-    key: "names",
-    sortable: true,
-    Element: ({ row }) => <span>{`${row.firstName} ${row.lastName}`}</span>,
-  },
-  {
-    title: "Email",
-    key: "email",
+    title: "Role Name",
+    key: "rtbRoleName",
     sortable: true,
   },
   {
-    title: "Phone",
-    key: "phoneNumber",
+    title: "Description",
+    key: "roleDescription",
     sortable: true,
   },
   {
-    title: "Title",
-    key: "title",
+    title: "System Features",
+    key: "systemFeatures",
     sortable: true,
-    Element: ({ row }) => <span>{row.title || "Inspector"}</span>,
-  },
-  {
-    title: "Inspector ID",
-    key: "nationalId",
-    sortable: true,
+    Element: ({ row }) => (
+      <span>{row.systemFeatures.split(",").slice(1).join(", ")}</span>
+    ),
   },
   {
     title: "Action",
@@ -60,17 +51,17 @@ const rolesColumns: Column[] = [
     Element: ({ row }) => (
       <>
         <IconButton
-          onClick={() => handleAction(row.inspector_id, "view")}
+          onClick={() => handleAction(row.id, "view")}
           icon={EyeIcon}
           className="text-blue-500 "
         />
         <IconButton
-          onClick={() => handleAction(row.inspector_id, "edit")}
+          onClick={() => handleAction(row.id, "edit")}
           icon={PencilIcon}
           className="text-green-500 "
         />
         <IconButton
-          onClick={() => handleAction(row.inspector_id, "delete")}
+          onClick={() => handleAction(row.id, "delete")}
           icon={TrashIcon}
           className="text-red-500 "
         />
@@ -91,9 +82,8 @@ const RolesPage = () => {
   const fetchRoles = async () => {
     setLoading(true);
     try {
-      const { data } = await getAllInspectors();
-      setRoles(data);
-      toast.success("Inspectors fetched successfully");
+      const { data } = await getRoles();
+      setRoles(data.data);
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {

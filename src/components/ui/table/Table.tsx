@@ -13,6 +13,7 @@ export interface RowContext<T = any> {
   value: string;
   row: T;
   rows: T[];
+  refresh?: () => void;
 }
 
 export interface Column<T = any> {
@@ -73,6 +74,7 @@ interface CustomTableProps {
     buttonLabel?: string;
     buttonAction?: () => void;
   };
+  refresh?: () => void;
 }
 
 export function CustomTable({
@@ -89,15 +91,16 @@ export function CustomTable({
   setPage = () => {},
   errorFetching = false,
   loading,
-  dateRange,
+  refresh,
   paginated = false,
   pagination,
   onRowClick,
   emptyViewProps,
 }: CustomTableProps) {
-  const [paginationOptions, setPaginationOpts] = useRecoilState(
-    paginationOptionsState
-  );
+  const [
+    paginationOptions,
+    // setPaginationOpts
+  ] = useRecoilState(paginationOptionsState);
 
   const toggleRow = (id: string) =>
     setSelection((current) =>
@@ -105,10 +108,10 @@ export function CustomTable({
         ? current.filter((item) => item !== id)
         : [...current, id]
     );
-  const toggleAll = () =>
-    setSelection((current) =>
-      current.length === data.length ? [] : data.map((item) => item.id)
-    );
+  // const toggleAll = () =>
+  //   setSelection((current) =>
+  //     current.length === data.length ? [] : data.map((item) => item.id)
+  //   );
   // console.log('sortedData', sortedData);
   const rows =
     //check if paginated is true
@@ -145,6 +148,7 @@ export function CustomTable({
                               row: item,
                               rows: data,
                               value: getObjValue(column.key, item)!,
+                              refresh,
                             }}
                           />
                         ) : (

@@ -8,6 +8,7 @@ import React from "react";
 import { toast } from "react-toastify";
 import { ComplexInput } from "../ui/Input";
 import MultiSelectCombobox from "../ui/MultiSelectCombobox";
+import { createRole } from "@/hooks/useApi";
 
 interface NewRoleModalProps {
   planId: string;
@@ -30,16 +31,16 @@ const roleFeatures = [
 const NewRoleModal = () => {
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = React.useState({
-    features: [],
     roleName: "",
     roleDescription: "",
+    featureIds: [],
   });
   const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      //   await addFeedback(formData.planId, formData.review);
+      await createRole(formData);
       toast.success("New role created successfully");
       setOpen(false);
     } catch (error) {
@@ -99,9 +100,9 @@ const NewRoleModal = () => {
             />
             <MultiSelectCombobox
               options={roleFeatures}
-              selectedValues={formData.features}
+              selectedValues={formData.featureIds}
               onSelect={(selectedValues: any) =>
-                setFormData((prev) => ({ ...prev, features: selectedValues }))
+                setFormData((prev) => ({ ...prev, featureIds: selectedValues }))
               }
             />
           </form>

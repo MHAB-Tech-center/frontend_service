@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/base/button";
 import Dialog from "@/components/ui/Dialog";
+import { inviteRMBStaff } from "@/hooks/useApi";
+import { getErrorMessage } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 import React from "react";
-import { ComplexInput } from "../ui/Input";
 import { toast } from "react-toastify";
-import { getErrorMessage } from "@/lib/utils";
-import { inviteInspector } from "@/hooks/useApi";
+import { ComplexInput } from "../ui/Input";
 
-const NewInspectorModal = () => {
+const NewStaffModal = () => {
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = React.useState({
     email: "",
@@ -17,8 +17,8 @@ const NewInspectorModal = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await inviteInspector(formData.email);
-      toast.success("Inspector invited successfully");
+      await inviteRMBStaff(formData.email);
+      toast.success("RMB Staff invited successfully");
       setOpen(false);
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -35,10 +35,10 @@ const NewInspectorModal = () => {
       trigger={
         <Button className="text-white rounded-xl">
           <PlusIcon className="w-6 h-6" />
-          &nbsp;&nbsp; Add New Inspector
+          &nbsp;&nbsp; Add New Staff
         </Button>
       }
-      title="Invite New Inspector"
+      title="Invite New Staff"
       footer={
         <div className="flex-1 flex justify-center gap-4 flex-wrap px-4">
           <Button
@@ -70,4 +70,4 @@ const NewInspectorModal = () => {
   );
 };
 
-export default NewInspectorModal;
+export default NewStaffModal;

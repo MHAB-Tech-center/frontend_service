@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
+import { rolesState } from "@/atoms";
+import { getErrorMessage } from "@/lib/utils";
 import axios from "axios";
 import Cookies from "js-cookie";
 import React from "react";
 import { toast } from "react-toastify";
+import { useRecoilState } from "recoil";
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL as string,
@@ -64,12 +66,25 @@ export const resetPassword = async (
 export const useOnLoad = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  // const [, setCategories] = useRecoilState(categoriesState);
+  const [, setRoles] = useRecoilState(rolesState);
+
+  const fetchRoles = async () => {
+    setLoading(true);
+    try {
+      const { data } = await getRoles();
+      setRoles(data.data);
+    } catch (error) {
+      setError(getErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const onLoad = async () => {
     setLoading(true);
     console.log("loading");
     // load initial data
+    await fetchRoles();
   };
 
   return {
@@ -105,4 +120,26 @@ export const setupRMBStaff = async (data: any) => {
       "Content-Type": "multipart/form-data",
     },
   });
+};
+
+export const inviteRMBStaff = async (email: string) => {
+  return api.post("/rmb-staff/invite", { email });
+};
+
+export const getAllRMBStaff = async () => {
+  return api.get("/rmb-staff/all");
+};
+
+export const getRoles = async () => {
+  return api.get("/rmb-staff/roles/all");
+};
+
+export const createRole = async (data: any) => {
+  return api.post("/rmb-staff/roles/create", data);
+};
+
+export const updateRole = async (data: any) => {
+  return api.put(
+    `/rmb-staff/assign-roles?rmbRoleId=${data.rmbRoleId}&rmbStaffId=${data.rmbStaffId}`
+  );
 };
