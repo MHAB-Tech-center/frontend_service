@@ -1,29 +1,12 @@
 import NewRoleModal from "@/components/modals/new-role";
+import IconButton from "@/components/ui/IconButton";
 import { Column } from "@/components/ui/table/Table";
 import TableWrapper from "@/components/ui/table/TableWrapper";
 import { getRoles } from "@/hooks/useApi";
 import { getErrorMessage } from "@/lib/utils";
 import { EyeIcon, FolderMinusIcon, PencilIcon, TrashIcon } from "lucide-react";
-import { ButtonHTMLAttributes, useEffect, useState } from "react";
-import { IconType } from "react-icons/lib";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  icon: IconType | React.ElementType;
-  className?: string;
-}
-
-const IconButton: React.FC<IconButtonProps> = ({
-  icon: Icon,
-  className,
-  ...props
-}) => {
-  return (
-    <button className={`p-2 rounded ${className}`} {...props}>
-      <Icon className="h-5 w-5" />
-    </button>
-  );
-};
 
 const rolesColumns: Column[] = [
   {

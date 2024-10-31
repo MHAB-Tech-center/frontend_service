@@ -12,19 +12,35 @@ import DetailedReport from "@/components/ui/report/detailed-report";
 import IdentificationTab from "@/components/ui/report/identification";
 import SummaryReport from "@/components/ui/report/summary-report";
 import { getInspectionInfo } from "@/hooks/useApi";
-import { getErrorMessage } from "@/lib/utils";
+import { getErrorMessage, isDateString } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import Logo from "@/assets/rmb-logo.png";
+import { reportMetaData } from "@/lib/constants";
+
+interface DataItem {
+  key: string;
+  value: string;
+}
+
+interface Section {
+  sectionTitle: string;
+  data: DataItem[];
+}
 
 const ReportPage = () => {
   const { id: reportId } = useParams();
   const [loading, setLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const [inspectionInfo, setInspectionInfo] = useState<{
     identification: any;
     records: any[];
     summaryReport: any;
+    [key: string]: any; // Add index signature
   }>({
     identification: {},
     records: [],
@@ -42,6 +58,150 @@ const ReportPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const generatePDF = (reportData: Section[]) => {
+    setIsGenerating(true);
+    const doc = new jsPDF();
+
+    // Add logo
+    const logoWidth = 60;
+    const logoHeight = 15;
+    const logoX = (doc.internal.pageSize.width - logoWidth) / 2;
+    doc.addImage(Logo, "PNG", logoX, 10, logoWidth, logoHeight);
+
+    let startY = 35;
+    const pageWidth = doc.internal.pageSize.width;
+    const margin = 10;
+    const usableWidth = pageWidth - margin * 2;
+
+    // Add title centered
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    const title = "INSPECTION MANUAL REPORT";
+    const titleWidth =
+      (doc.getStringUnitWidth(title) * doc.getFontSize()) /
+      doc.internal.scaleFactor;
+    const titleX = (pageWidth - titleWidth) / 2;
+    doc.text(title, titleX, startY);
+
+    // Add date centered
+    const currentDate = new Date().toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    const dateText = `Date: ${currentDate}`;
+    const dateWidth =
+      (doc.getStringUnitWidth(dateText) * doc.getFontSize()) /
+      doc.internal.scaleFactor;
+    const dateX = (pageWidth - dateWidth) / 2;
+    doc.text(dateText, dateX, 45); // Position below title
+
+    startY = 55; // Increased to accommodate the new header layout
+
+    reportData.forEach((section) => {
+      // Removed the separate section title text
+
+      // Add the table using jspdf-autotable
+      autoTable(doc, {
+        head: section.sectionTitle
+          ? [
+              [
+                {
+                  content: section.sectionTitle,
+                  colSpan: 2,
+                  styles: { halign: "center" },
+                },
+              ],
+            ]
+          : undefined,
+        body: section.data.map((item) => [item.key, item.value]),
+        startY: startY,
+        margin: { left: margin },
+        styles: {
+          fontSize: 10,
+          cellPadding: 5,
+          lineWidth: 0.1,
+          lineColor: [200, 200, 200],
+          halign: "left",
+          valign: "middle",
+          overflow: "linebreak",
+          cellWidth: "auto",
+          minCellHeight: 0,
+        },
+        headStyles: {
+          fillColor: [240, 240, 240],
+          textColor: [0, 0, 0],
+          fontStyle: "bold",
+          fontSize: 12,
+          cellPadding: 8,
+          halign: "center", // Center the section title
+        },
+        theme: "grid",
+        columnStyles: {
+          0: {
+            cellWidth: usableWidth * 0.4,
+            fontStyle: "bold",
+          },
+          1: {
+            cellWidth: usableWidth * 0.6,
+          },
+        },
+      });
+
+      startY = (doc as any).lastAutoTable.finalY + 10;
+
+      // Add new page if needed
+      if (startY > doc.internal.pageSize.height - 20) {
+        doc.addPage();
+        startY = 50; // Start lower on subsequent pages to account for header
+      }
+    });
+
+    doc.save("inspection_manual_report.pdf");
+    setIsGenerating(false);
+  };
+
+  const handleOnExport = () => {
+    const reportData: Section[] = [];
+
+    for (const section of reportMetaData) {
+      const data: DataItem[] = [];
+      for (const item of section.data) {
+        if (item.keyInAPI) {
+          const keys = item.keyInAPI.split(".");
+          let value = inspectionInfo;
+          for (const key of keys) {
+            value = value ? value[key] : null;
+          }
+          data.push({ key: item.key, value: value ? String(value) : "N/A" });
+        } else {
+          const record = inspectionInfo.records
+            .map((el) => el.records)
+            .flat()
+            .find((el: any) => el.pseudoName === item.pseudoName);
+          const value = record?.boxValue || record?.flagValue || "N/A";
+          let formattedValue = value;
+          if (isDateString(value)) {
+            const date = new Date(value);
+            formattedValue = date.toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            });
+          }
+          data.push({ key: item.key, value: formattedValue || "" });
+        }
+      }
+      reportData.push({ sectionTitle: section.title, data });
+    }
+
+    console.log(reportData);
+
+    generatePDF(reportData);
   };
 
   useEffect(() => {
@@ -77,7 +237,9 @@ const ReportPage = () => {
     <div className="h-full flex flex-col gap-2 w-full">
       <div className="w-full flex justify-end gap-4">
         <FeedbackModal planId={reportId} />
-        <Button>Export to PDF</Button>
+        <Button onClick={handleOnExport}>
+          {isGenerating ? "Generating..." : "Export PDF"}
+        </Button>
       </div>
       <Tabs defaultValue="identification" className="">
         <TabsList className="w-full gap-4 justify-start bg-transparent flex-wrap h-fit">

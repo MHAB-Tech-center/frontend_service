@@ -23,7 +23,7 @@ export const paginationOptionsState = atom({
   default: 1,
 });
 
-interface Role {
+export interface Role {
   rtbRoleName: string;
   roleDescription: string;
   id: string;
