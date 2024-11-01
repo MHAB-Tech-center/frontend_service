@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { login, verifyLogin } from "./useApi";
+import { Role } from "@/atoms";
 interface IUser {
   firstName: string;
   lastName: string;
@@ -12,6 +13,7 @@ interface IUser {
   gender: string;
   national_id: string;
   phonenumber: string;
+  rmbRole: Role;
 }
 
 interface IAuthContext {
@@ -21,14 +23,9 @@ interface IAuthContext {
   logout: () => void;
   loading: boolean;
   isAuthenticated: boolean | null;
+  isAllowed: (permissions: string | string[]) => boolean;
 }
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
-
-// export const nonProtectedRoutes = [
-//   "/auth/login",
-//   "/auth/forgot-password",
-//   "/auth/reset-password",
-// ];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<IUser | null>(null);
@@ -78,6 +75,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = "/login";
   };
 
+  const isAllowed = (permissions: string | string[]) => {
+    if (!user) return false;
+    permissions = Array.isArray(permissions) ? permissions : [permissions];
+    // user.rmbRole.systemFeatures is a string of comma separated permissions
+    const userPermissions = user.rmbRole.systemFeatures.split(",");
+    return permissions.every((permission) =>
+      userPermissions.includes(permission)
+    );
+  };
+
   useEffect(() => {
     const user = localStorage.getItem(
       import.meta.env.VITE_LOCAL_STORAGE_PREFIX
@@ -102,6 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         loading,
         isAuthenticated,
+        isAllowed,
       }}
     >
       {children}

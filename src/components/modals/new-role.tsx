@@ -9,24 +9,11 @@ import { toast } from "react-toastify";
 import { ComplexInput } from "../ui/Input";
 import MultiSelectCombobox from "../ui/MultiSelectCombobox";
 import { createRole } from "@/hooks/useApi";
+import { roleFeatures } from "@/lib/constants";
 
 interface NewRoleModalProps {
   planId: string;
 }
-
-const roleFeatures = [
-  { value: "report.view", label: "Report View" },
-  { value: "report.feedback", label: "Report Feedback" },
-  { value: "report.approve", label: "Report Approve" },
-  { value: "inspectors.view", label: "Inspectors View" },
-  { value: "inspectors.invite", label: "Inspectors Invite" },
-  { value: "inspectors.write", label: "Inspectors Write" },
-  { value: "rmb.view", label: "RMB View" },
-  { value: "rmb.invite", label: "RMB Invite" },
-  { value: "rmb.write", label: "RMB Write" },
-  { value: "roles.view", label: "Roles View" },
-  { value: "roles.write", label: "Roles Write" },
-];
 
 const NewRoleModal = () => {
   const [open, setOpen] = React.useState(false);

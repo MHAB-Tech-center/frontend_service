@@ -45,3 +45,31 @@ export const fractionValue = (value: number, fractionDigits = 2) => {
     maximumFractionDigits: fractionDigits,
   });
 };
+
+export const isDateString = (str: string) => {
+  const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z?$/; // ISO date format
+  const yyyyMMddRegex = /^\d{4}-\d{2}-\d{2}$/; // yyyy-mm-dd
+  const ddMMyyyyRegex = /^\d{2}-\d{2}-\d{4}$/; // dd-mm-yyyy
+  const mmDDyyyyRegex = /^\d{2}\/\d{2}\/\d{4}$/; // mm/dd/yyyy
+
+  // Check if it matches any date format regex
+  if (
+    isoRegex.test(str) ||
+    yyyyMMddRegex.test(str) ||
+    ddMMyyyyRegex.test(str) ||
+    mmDDyyyyRegex.test(str)
+  ) {
+    const date = new Date(str);
+
+    // Check if it is a valid date and not something like "3999" or "00"
+    if (!isNaN(date.getTime())) {
+      // Ensure it's a real date string by comparing parsed date with input
+      const parsedStr = date.toISOString().split("T")[0];
+      if (str.includes(parsedStr)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
