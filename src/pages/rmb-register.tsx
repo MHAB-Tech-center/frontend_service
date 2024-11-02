@@ -18,9 +18,17 @@ import { toast } from "react-toastify";
 import { setupRMBStaff } from "@/hooks/useApi";
 import { getErrorMessage } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { Provinces, Districts } from "rwanda";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/base/select";
 
 export default function RegistrationForm() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -248,25 +256,77 @@ export default function RegistrationForm() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="province">Province</Label>
-                  <Input
+                  {/* <Input
                     id="province"
                     name="province"
                     placeholder="Enter your province"
                     value={formData.province}
                     onChange={handleInputChange}
                     required
-                  />
+                  /> */}
+                  {/* <Select
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, rmbRoleId: value })
+                    }
+                    defaultValue={formData.rmbRoleId}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {roles.map((role) => (
+                        <SelectItem key={role.id} value={role.id}>
+                          {role.rtbRoleName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select> */}
+                  <Select
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, province: value, district: "" })
+                    }
+                    defaultValue={formData.province}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a province" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Provinces().map((province: string) => (
+                        <SelectItem key={province} value={province}>
+                          {province}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="district">District</Label>
-                  <Input
+                  {/* <Input
                     id="district"
                     name="district"
                     placeholder="Enter your district"
                     value={formData.district}
                     onChange={handleInputChange}
                     required
-                  />
+                  /> */}
+                  <Select
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, district: value })
+                    }
+                    defaultValue={formData.district}
+                    disabled={!formData.province}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a district" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Districts(formData.province).map((district: string) => (
+                        <SelectItem key={district} value={district}>
+                          {district}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="national_id">National ID</Label>

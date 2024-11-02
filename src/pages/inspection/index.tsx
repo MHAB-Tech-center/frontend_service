@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/base/button";
 import { Column } from "@/components/ui/table/Table";
 import TableWrapper from "@/components/ui/table/TableWrapper";
 import { getAllInspections } from "@/hooks/useApi";
@@ -121,9 +120,9 @@ const Reports = () => {
 
   return (
     <div>
-      <div className="w-full flex justify-end">
+      {/* <div className="w-full flex justify-end">
         <Button>Export to PDF</Button>
-      </div>
+      </div> */}
       <TableWrapper
         title={"Inspection Reports Submitted"}
         columns={inspectorsColumns}

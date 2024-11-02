@@ -14,7 +14,7 @@ import SummaryReport from "@/components/ui/report/summary-report";
 import { getInspectionInfo } from "@/hooks/useApi";
 import { getErrorMessage, isDateString } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -35,6 +35,7 @@ const ReportPage = () => {
   const { id: reportId } = useParams();
   const [loading, setLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const navigate = useNavigate();
 
   const [inspectionInfo, setInspectionInfo] = useState<{
     identification: any;
@@ -52,6 +53,15 @@ const ReportPage = () => {
       setLoading(true);
       const response = await getInspectionInfo(reportId!);
       console.log(response.data);
+      if (
+        response.data.data.identification === null ||
+        response.data.data.summaryReport === null ||
+        response.data.data.records.length === 0
+      ) {
+        toast.error("Report is still in progress. Please try again later.");
+        navigate("/report");
+        return;
+      }
       setInspectionInfo(response.data.data);
     } catch (error) {
       toast.error(getErrorMessage(error));

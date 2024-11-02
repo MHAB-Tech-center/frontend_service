@@ -86,6 +86,9 @@ importers:
       recoil:
         specifier: ^0.7.7
         version: 0.7.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      rwanda:
+        specifier: ^2.1.6
+        version: 2.1.6
       tailwind-merge:
         specifier: ^2.5.3
         version: 2.5.3
@@ -2114,6 +2117,9 @@ packages:
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
+
+  rwanda@2.1.6:
+    resolution: {integrity: sha512-2nRQiH4wtz9MDZSZ0I7418BOiwdYoktqB3DROJm0l70P2TOE1hb2gDFEwIN07lVEIJMikgtJf+tCNQYPmz9vUg==}
 
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
@@ -4307,6 +4313,8 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
+
+  rwanda@2.1.6: {}
 
   scheduler@0.23.2:
     dependencies:
