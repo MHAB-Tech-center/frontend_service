@@ -8,10 +8,6 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
-    server: {
-    host: '0.0.0.0',
-    port: 5173,
-  },
   preview: {
     port: 5173,
     host: true,
