@@ -140,3 +140,8 @@ export const updateRole = async (data: any) => {
     `/rmb-staff/assign-roles?rmbRoleId=${data.rmbRoleId}&rmbStaffId=${data.rmbStaffId}`
   );
 };
+
+export const getAnalytics = async () => {
+  return api.get("/analytics/rmb");
+};
+

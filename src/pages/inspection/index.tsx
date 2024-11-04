@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/base/select";
 import { Column } from "@/components/ui/table/Table";
 import TableWrapper from "@/components/ui/table/TableWrapper";
 import { getAllInspections } from "@/hooks/useApi";
@@ -98,10 +106,47 @@ const handleAction = (inspectionId: string, action: string) => {
   }
 };
 
+interface Inspection {
+  id: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  inspectorInfo: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    dob: string;
+    phoneNumber: string;
+    nationalId: string;
+    province: string;
+    district: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+  };
+  minesiteInfo: {
+    id: string;
+    name: string;
+    code: string;
+    province: string;
+    district: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
 const Reports = () => {
-  const [inspections, setInspections] = useState([]);
+  const [inspections, setInspections] = useState<Inspection[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedProvince, setSelectedProvince] = useState<string>("");
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
   const navigate = useNavigate();
+
+  // filters
+  const [provinces, setProvinces] = useState<string[]>([]);
+  const [districts, setDistricts] = useState<string[]>([]);
+
   const fetchInspections = async () => {
     setLoading(true);
     try {
@@ -117,8 +162,84 @@ const Reports = () => {
   const { isAllowed } = useAuth();
 
   useEffect(() => {
+    const provinces = inspections.map((inspection) =>
+      inspection.minesiteInfo.province.toLowerCase()
+    );
+    const districts = inspections.map((inspection) =>
+      inspection.minesiteInfo.district.toLowerCase()
+    );
+    setProvinces(Array.from(new Set(provinces)));
+    setDistricts(Array.from(new Set(districts)));
+  }, [inspections]);
+
+  useEffect(() => {
     fetchInspections();
   }, []);
+
+  const tableFilters = (
+    originalData: Inspection[],
+    sortedData: Inspection[],
+    setData: React.Dispatch<React.SetStateAction<Inspection[]>>,
+    reset: () => void
+  ) => {
+    const updateData = () => {
+      const filteredData = originalData.filter((inspection) => {
+        if (!selectedProvince || selectedProvince === "all") {
+          if (!selectedDistrict || selectedDistrict === "all") return true;
+          return inspection.minesiteInfo.district.toLowerCase() === selectedDistrict.toLowerCase();
+        }
+        if (!selectedDistrict || selectedDistrict === "all") {
+          return inspection.minesiteInfo.province.toLowerCase() === selectedProvince.toLowerCase();
+        }
+        return inspection.minesiteInfo.province.toLowerCase() === selectedProvince.toLowerCase() && 
+               inspection.minesiteInfo.district.toLowerCase() === selectedDistrict.toLowerCase();
+      });
+      setData(filteredData);
+    }
+
+    return (
+      <>
+        <Select
+          onValueChange={(value) => {
+            setSelectedProvince(value);
+            updateData();
+          }}
+          value={selectedProvince}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select province" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Provinces</SelectItem>
+            {provinces.map((province) => (
+              <SelectItem key={province} value={province} className="capitalize">
+                {province}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          onValueChange={(value) => {
+            setSelectedDistrict(value);
+            updateData();
+          }}
+          value={selectedDistrict}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select district" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Districts</SelectItem>
+            {districts.map((district) => (
+              <SelectItem key={district} value={district} className="capitalize">
+                {district}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </>
+    );
+  };
 
   return (
     <div>
@@ -150,7 +271,7 @@ const Reports = () => {
         //   },
         // }}
         // reset={reset}
-        // filters={tableFilters}
+        filters={tableFilters}
         // errorFetching={errorFetchingCases}
       />
     </div>
