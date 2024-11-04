@@ -23,19 +23,44 @@ import {
 } from "@/components/ui/base/dropdown-menu";
 
 const sidebarItems = [
-  { to: "/", icon: BarChart3, label: "Overview" },
-  { to: "/report", icon: FileText, label: "Report" },
-  { to: "/inspectors", icon: Users, label: "Inspectors" },
-  { to: "/roles", icon: User, label: "Roles" },
-  { to: "/rmb-staff", icon: UserRoundCog, label: "RMB Staff" },
+  {
+    to: "/",
+    icon: BarChart3,
+    label: "Overview",
+    permissions: ["report.view"],
+  },
+  {
+    to: "/report",
+    icon: FileText,
+    label: "Report",
+    permissions: ["any"],
+  },
+  {
+    to: "/inspectors",
+    icon: Users,
+    label: "Inspectors",
+    permissions: ["any"],
+  },
+  {
+    to: "/roles",
+    icon: User,
+    label: "Roles",
+    permissions: ["roles.view", "roles.write"],
+  },
+  {
+    to: "/rmb-staff",
+    icon: UserRoundCog,
+    label: "RMB Staff",
+    permissions: ["rmb.view", "rmb.invite", "rmb.write"],
+  },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ items }: { items: typeof sidebarItems }) => {
   const location = useLocation();
 
   return (
     <nav className="mt-8 space-y-2">
-      {sidebarItems.map((item, index) => {
+      {items.map((item, index) => {
         const isActive =
           location.pathname === item.to ||
           (location.pathname.startsWith(item.to) &&
@@ -62,7 +87,7 @@ const Sidebar = () => {
 
 export default function MainAppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isAllowed } = useAuth();
   const { onLoad } = useOnLoad();
   //   const { isXl, isLg } = useMediaQueries();
   //   const { pathname } = useLocation();
@@ -96,7 +121,9 @@ export default function MainAppShell() {
             <span className="sr-only">Close sidebar</span>
           </Button>
         </div>
-        <Sidebar />
+        <Sidebar
+          items={sidebarItems.filter((item) => item.permissions.includes('any') || isAllowed(item.permissions, "or"))}
+        />
       </aside>
 
       {/* Main content */}
@@ -122,9 +149,10 @@ export default function MainAppShell() {
                   <UserIcon className="h-6 w-6" />
                   <div className="flex flex-col gap-0 cursor-pointer">
                     <div className="text-sm font-semibold">
-                      {((user as any) ?? {}).roles
+                      {/* {((user as any) ?? {}).roles
                         ?.map((role: any) => role.role_name)
-                        .join(", ")}
+                        .join(", ")} */}
+                      {user?.rmbRole?.rtbRoleName ?? 'RMB'}
                     </div>
                     <div className="text-xs text-gray-500">{user?.email}</div>
                   </div>

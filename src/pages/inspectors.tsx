@@ -2,6 +2,7 @@ import NewInspectorModal from "@/components/modals/new-inspector";
 import { Column } from "@/components/ui/table/Table";
 import TableWrapper from "@/components/ui/table/TableWrapper";
 import { getAllInspectors } from "@/hooks/useApi";
+import useAuth from "@/hooks/useAuth";
 import { getErrorMessage } from "@/lib/utils";
 import { EyeIcon, FolderMinusIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { ButtonHTMLAttributes, useEffect, useState } from "react";
@@ -87,6 +88,7 @@ const handleAction = (inspectorId: string, action: string) => {
 const InspectorsPage = () => {
   const [inspectors, setInspectors] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { isAllowed } = useAuth();
 
   const fetchInspectors = async () => {
     setLoading(true);
@@ -125,7 +127,9 @@ const InspectorsPage = () => {
             console.log("New Inspector");
           },
         }}
-        actions={[<NewInspectorModal />]}
+        actions={[
+          isAllowed(["inspectors.invite"], "and") && <NewInspectorModal />,
+        ]}
         loading={loading}
         // reset={reset}
         // filters={tableFilters}

@@ -1,6 +1,7 @@
 import { Column } from "@/components/ui/table/Table";
 import TableWrapper from "@/components/ui/table/TableWrapper";
 import { getAllInspections } from "@/hooks/useApi";
+import useAuth from "@/hooks/useAuth";
 import { getErrorMessage } from "@/lib/utils";
 import { EyeIcon, PencilIcon } from "lucide-react";
 import { ButtonHTMLAttributes, useEffect, useState } from "react";
@@ -113,6 +114,7 @@ const Reports = () => {
       setLoading(false);
     }
   };
+  const { isAllowed } = useAuth();
 
   useEffect(() => {
     fetchInspections();
@@ -133,7 +135,9 @@ const Reports = () => {
         // actions={[<NewInspectorModal />]}
         loading={loading}
         onRowClick={(row) => {
-          navigate(`/report/${row.id}`);
+          if (isAllowed(["report.view"], "and")) {
+            navigate(`/report/${row.id}`);
+          }
         }}
         // emptyViewProps={{
         //   icon: <FolderMinusIcon className="h-10 w-10" />,

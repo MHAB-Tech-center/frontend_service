@@ -23,7 +23,7 @@ interface IAuthContext {
   logout: () => void;
   loading: boolean;
   isAuthenticated: boolean | null;
-  isAllowed: (permissions: string | string[]) => boolean;
+  isAllowed: (permissions: string | string[], logic?: "and" | "or") => boolean;
 }
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
@@ -75,20 +75,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = "/login";
   };
 
-  const isAllowed = (permissions: string | string[]) => {
+  const isAllowed = (permissions: string | string[], logic: "and" | "or" = "and") => {
     if (!user) return false;
+    if (!user.rmbRole) return false;
     permissions = Array.isArray(permissions) ? permissions : [permissions];
-    // user.rmbRole.systemFeatures is a string of comma separated permissions
     const userPermissions = user.rmbRole.systemFeatures.split(",");
-    return permissions.every((permission) =>
-      userPermissions.includes(permission)
-    );
+
+    return logic === "and"
+      ? permissions.every((permission) => userPermissions.includes(permission))
+      : permissions.some((permission) => userPermissions.includes(permission));
   };
 
   useEffect(() => {
     const user = localStorage.getItem(
       import.meta.env.VITE_LOCAL_STORAGE_PREFIX
     );
+    console.log(import.meta.env.DEV && user);
     if (user) {
       try {
         setUser(JSON.parse(user));

@@ -3,9 +3,11 @@ import NewStaffModal from "@/components/modals/new-staff";
 import { Column } from "@/components/ui/table/Table";
 import TableWrapper from "@/components/ui/table/TableWrapper";
 import { getAllRMBStaff } from "@/hooks/useApi";
+import useAuth from "@/hooks/useAuth";
 import { getErrorMessage } from "@/lib/utils";
 import { FolderMinusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const RMBStaffColumns: Column[] = [
@@ -68,6 +70,8 @@ const RMBStaffColumns: Column[] = [
 const RMBStaffPage = () => {
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { isAllowed } = useAuth();
+  const navigate = useNavigate();
 
   const fetchStaff = async () => {
     setLoading(true);
@@ -83,7 +87,10 @@ const RMBStaffPage = () => {
 
   useEffect(() => {
     fetchStaff();
-  }, []);
+    if (!isAllowed(["rmb.view"], "and")) {
+      navigate("/");
+    }
+  }, [navigate, isAllowed]);
 
   return (
     <div>
@@ -101,7 +108,9 @@ const RMBStaffPage = () => {
             console.log("New Staaff");
           },
         }}
-        actions={[<NewStaffModal />]}
+        actions={[
+          isAllowed(["rmb.invite"], "and") && <NewStaffModal />,
+        ]}
         loading={loading}
         refresh={fetchStaff}
         // reset={reset}

@@ -4,7 +4,13 @@
 import { DatePicker } from "@mantine/dates";
 import { paginationOptionsState } from "@/atoms";
 import { getObjValue } from "@/lib/utils";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { IoIosRefresh } from "react-icons/io";
 import { IoCalendarOutline, IoSearchOutline } from "react-icons/io5";
 import { useRecoilState } from "recoil";
@@ -149,7 +155,7 @@ interface TableWrapperProps<T = any> {
    * @default false
    */
   filterableByDate?: boolean;
-  actions?: React.ReactNode;
+  actions?: React.ReactNode[];
   error?: boolean;
   loading?: boolean;
   errorFetching?: boolean;
@@ -304,7 +310,10 @@ const TableWrapper = ({
                 onClick={() => refresh()}
               />
             )}
-            {actions && actions}
+            {actions &&
+              actions.map((action, i) => {
+                return <Fragment key={i}>{action}</Fragment>;
+              })}
           </div>
         </div>
       </div>

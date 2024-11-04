@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { rolesState } from "@/atoms";
 import { getErrorMessage } from "@/lib/utils";
 import axios from "axios";
@@ -20,12 +19,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Handle 403 error (Forbidden)
       toast.error(
         "You are not authorized to perform this action. Try logging in again."
       );
       window.location.href = "/login";
-      // Optionally, you can also perform other actions like redirecting to a login page
     }
     return Promise.reject(error);
   }

@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/base/select";
 
 export default function RegistrationForm() {
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",

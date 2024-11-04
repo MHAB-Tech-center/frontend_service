@@ -20,6 +20,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import Logo from "@/assets/rmb-logo.png";
 import { reportMetaData } from "@/lib/constants";
+import useAuth from "@/hooks/useAuth";
 
 interface DataItem {
   key: string;
@@ -36,6 +37,7 @@ const ReportPage = () => {
   const [loading, setLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
+  const { isAllowed } = useAuth();
 
   const [inspectionInfo, setInspectionInfo] = useState<{
     identification: any;
@@ -216,7 +218,10 @@ const ReportPage = () => {
 
   useEffect(() => {
     fetchReport();
-  }, []);
+    if (!isAllowed(["report.view"], "and")) {
+      navigate("/report");
+    }
+  }, [navigate, isAllowed]);
 
   useEffect(() => {
     const onBeforeUnload = (ev: Event) => {
@@ -246,7 +251,9 @@ const ReportPage = () => {
   return (
     <div className="h-full flex flex-col gap-2 w-full">
       <div className="w-full flex justify-end gap-4">
-        <FeedbackModal planId={reportId} />
+        {isAllowed(["report.feedback"], "and") && (
+          <FeedbackModal planId={reportId} />
+        )}
         <Button onClick={handleOnExport}>
           {isGenerating ? "Generating..." : "Export PDF"}
         </Button>
