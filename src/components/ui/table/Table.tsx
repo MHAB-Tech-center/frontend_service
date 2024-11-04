@@ -125,7 +125,6 @@ export function CustomTable({
                   role="data-rows"
                   key={item_index}
                   className={cn("", onRowClick && "cursor-pointer")}
-                  onClick={() => onRowClick && onRowClick(item as any)}
                 >
                   <Table.Td>
                     <Checkbox
@@ -140,6 +139,11 @@ export function CustomTable({
                         key={i}
                         align={column.align}
                         className="text-gray-600"
+                        onClick={
+                          !column.Element
+                            ? () => onRowClick && onRowClick(item as any)
+                            : undefined
+                        }
                       >
                         {column.Element ? (
                           <column.Element
@@ -167,7 +171,6 @@ export function CustomTable({
               role="data-rows"
               key={item_index}
               className={cn("", onRowClick && "cursor-pointer")}
-              onClick={() => onRowClick && onRowClick(item as any)}
             >
               <Table.Td>
                 <Checkbox
@@ -181,6 +184,11 @@ export function CustomTable({
                     data-test-id={getObjValue(column.key, item)!}
                     key={i}
                     align={column.align}
+                    onClick={
+                      !column.Element
+                        ? () => onRowClick && onRowClick(item as any)
+                        : undefined 
+                    }
                   >
                     {column.Element ? (
                       <column.Element

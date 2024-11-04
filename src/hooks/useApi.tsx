@@ -145,3 +145,12 @@ export const getAnalytics = async () => {
   return api.get("/analytics/rmb");
 };
 
+export const takeAction = async (
+  planId: string,
+  action: "APPROVE" | "REJECT"
+) => {
+  return api.patch(
+    `/inspections/reports/take-action?action=${action}`,
+    { planId }
+  );
+};

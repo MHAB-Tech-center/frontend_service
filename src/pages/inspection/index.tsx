@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Select,
@@ -16,6 +17,7 @@ import { ButtonHTMLAttributes, useEffect, useState } from "react";
 import { IconType } from "react-icons/lib";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import ConfirmActionModal from "@/components/modals/confirm-action";
 
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: IconType | React.ElementType;
@@ -73,24 +75,28 @@ const inspectorsColumns: Column[] = [
     title: "Action",
     key: "action",
     sortable: false,
-    Element: ({ row }) => (
-      <>
+    Element: ({ row, refresh }) => (
+      <div className="flex gap-2">
         <IconButton
           onClick={() => handleAction(row.id, "view")}
           icon={EyeIcon}
-          className="text-blue-500 "
+          className="text-blue-500"
         />
-        <IconButton
-          onClick={() => handleAction(row.id, "edit")}
-          icon={PencilIcon}
-          className="text-green-500 "
+        <ConfirmActionModal
+          planId={row.id}
+          action="APPROVE"
+          refresh={refresh}
+          buttonClassName="px-2 py-1 text-sm"
+          disabled={row.status === "APPROVED" || row.status === "IN_PROGRESS"}
         />
-        {/* <IconButton
-          onClick={() => handleAction(row.inspector_id, "delete")}
-          icon={TrashIcon}
-          className="text-red-500 "
-        /> */}
-      </>
+        <ConfirmActionModal
+          planId={row.id}
+          action="REJECT"
+          refresh={refresh}
+          buttonClassName="px-2 py-1 text-sm"
+          disabled={row.status === "REJECTED" || row.status === "IN_PROGRESS"}
+        />
+      </div>
     ),
   },
 ];
@@ -177,13 +183,14 @@ const Reports = () => {
   }, []);
 
   const tableFilters = (
-    originalData: Inspection[],
-    sortedData: Inspection[],
-    setData: React.Dispatch<React.SetStateAction<Inspection[]>>,
-    reset: () => void
+    originalData: any[],
+    sortedData: any[],
+    setData?: React.Dispatch<React.SetStateAction<any[]>>,
+    reset?: () => void
   ) => {
     const updateData = () => {
-      const filteredData = originalData.filter((inspection) => {
+      if (!setData) return;
+      const filteredData = originalData.filter((inspection: Inspection) => {
         if (!selectedProvince || selectedProvince === "all") {
           if (!selectedDistrict || selectedDistrict === "all") return true;
           return inspection.minesiteInfo.district.toLowerCase() === selectedDistrict.toLowerCase();
@@ -198,7 +205,7 @@ const Reports = () => {
     }
 
     return (
-      <>
+      <div className="flex gap-4 items-center">
         <Select
           onValueChange={(value) => {
             setSelectedProvince(value);
@@ -237,7 +244,7 @@ const Reports = () => {
             ))}
           </SelectContent>
         </Select>
-      </>
+      </div>
     );
   };
 
@@ -272,6 +279,7 @@ const Reports = () => {
         // }}
         // reset={reset}
         filters={tableFilters}
+        refresh={fetchInspections}
         // errorFetching={errorFetchingCases}
       />
     </div>

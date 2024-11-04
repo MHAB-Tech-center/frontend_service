@@ -21,6 +21,7 @@ import autoTable from "jspdf-autotable";
 import Logo from "@/assets/rmb-logo.png";
 import { reportMetaData } from "@/lib/constants";
 import useAuth from "@/hooks/useAuth";
+import ConfirmActionModal from "@/components/modals/confirm-action";
 
 interface DataItem {
   key: string;
@@ -253,6 +254,28 @@ const ReportPage = () => {
       <div className="w-full flex justify-end gap-4">
         {isAllowed(["report.feedback"], "and") && (
           <FeedbackModal planId={reportId} />
+        )}
+        {isAllowed(["report.approve"], "and") && (
+          <ConfirmActionModal
+            planId={reportId!}
+            action="APPROVE"
+            refresh={() => fetchReport()}
+            buttonClassName={`bg-green-600 ${
+              inspectionInfo.status === "APPROVED" ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={inspectionInfo.status === "APPROVED"}
+          />
+        )}
+        {isAllowed(["report.approve"], "and") && (
+          <ConfirmActionModal
+            planId={reportId!}
+            action="REJECT"
+            refresh={() => fetchReport()}
+            buttonClassName={`bg-red-600 ${
+              inspectionInfo.status === "REJECTED" ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={inspectionInfo.status === "REJECTED"}
+          />
         )}
         <Button onClick={handleOnExport}>
           {isGenerating ? "Generating..." : "Export PDF"}
