@@ -154,3 +154,20 @@ export const takeAction = async (
     { planId }
   );
 };
+
+export const getProfile = async () => {
+  // return api.get("/auth/get-profile");
+  /* Simulate the response from the server */
+  return {
+    data: {
+      fullName: "John Doe",
+      email: "john.doe@example.com",
+      role: "Inspector",
+      province: "Province 1",
+      district: "District 1",
+      phoneNumber: "1234567890",
+      profilePic:
+        "http://res.cloudinary.com/dclubb6gk/image/upload/v1730190590/kabstore/products/original-0c14504bd291054d76548cb015dff89a_1730190590128.png",
+    },
+  };
+};

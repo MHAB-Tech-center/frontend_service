@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import NewInspectorModal from "@/components/modals/new-inspector";
 import { Column } from "@/components/ui/table/Table";

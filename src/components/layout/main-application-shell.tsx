@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   BarChart3,
   FileText,
   Menu,
   User,
-  UserIcon,
   UserRoundCog,
   Users,
   X,
+  LogOut,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/base/button";
@@ -20,7 +19,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/base/dropdown-menu";
+import ProfileModal from "@/components/modals/profile";
 
 const sidebarItems = [
   {
@@ -87,12 +88,11 @@ const Sidebar = ({ items }: { items: typeof sidebarItems }) => {
 
 export default function MainAppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isAuthenticated, user, isAllowed } = useAuth();
+  const { isAuthenticated, user, isAllowed, logout } = useAuth();
   const { onLoad } = useOnLoad();
-  //   const { isXl, isLg } = useMediaQueries();
-  //   const { pathname } = useLocation();
 
   useEffect(() => {
+    console.log('user', user)
     if (isAuthenticated === false) {
       if (import.meta.env.VITE_APP_FORCE_LOGIN === "true" || !user)
         window.location.href = "/login";
@@ -143,34 +143,26 @@ export default function MainAppShell() {
           <div className="mb-8 flex items-center justify-between rounded-md bg-white py-6 px-4">
             <h2 className="text-2xl font-semibold">Overview</h2>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="flex items-center space-x-2">
-                  <UserIcon className="h-6 w-6" />
+            <div className="flex items-center gap-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
                   <div className="flex flex-col gap-0 cursor-pointer">
                     <div className="text-sm font-semibold">
-                      {/* {((user as any) ?? {}).roles
-                        ?.map((role: any) => role.role_name)
-                        .join(", ")} */}
                       {user?.rmbRole?.rtbRoleName ?? 'RMB'}
                     </div>
                     <div className="text-xs text-gray-500">{user?.email}</div>
                   </div>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <Link to="#" className="flex w-full items-center">
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link to="/logout" className="flex w-full items-center">
-                    Logout
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <ProfileModal />
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
           <div className="rounded-lg bg-white p-6 shadow min-h-[80vh] ">
             <Outlet />
