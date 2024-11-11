@@ -14,6 +14,7 @@ interface IUser {
   national_id: string;
   phonenumber: string;
   rmbRole: Role;
+  roles: { role_name: string }[];
 }
 
 interface IAuthContext {
@@ -78,6 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAllowed = (permissions: string | string[], logic: "and" | "or" = "and") => {
     if (!user) return false;
     if (!user.rmbRole) return false;
+    if (user.roles.some(role => role.role_name === 'ADMIN')) return true;
     permissions = Array.isArray(permissions) ? permissions : [permissions];
     const userPermissions = user.rmbRole.systemFeatures.split(",");
 
