@@ -78,8 +78,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isAllowed = (permissions: string | string[], logic: "and" | "or" = "and") => {
     if (!user) return false;
-    if (!user.rmbRole) return false;
     if (user.roles.some(role => role.role_name === 'ADMIN')) return true;
+    if (!user.rmbRole) return false;
     permissions = Array.isArray(permissions) ? permissions : [permissions];
     const userPermissions = user.rmbRole.systemFeatures.split(",");
 
