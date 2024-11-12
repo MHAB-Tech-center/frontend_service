@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Specify the content to be written to the .env.local file
-ENV_CONTENT="VITE_LOCAL_STORAGE_PREFIX=dmim\nVITE_API_URL=http://10.10.82.249:3000\nVITE_APP_FORCE_LOGIN=true"
+ENV_CONTENT="VITE_LOCAL_STORAGE_PREFIX=dmim\nVITE_API_URL=http://dmis.rmb.gov.rw:3000\nVITE_APP_FORCE_LOGIN=true"
 
 
 # Check if .env.local file exists
