@@ -12,6 +12,9 @@ const Inspectors = lazy(() => import("@/pages/inspectors"));
 const Roles = lazy(() => import("@/pages/roles"));
 const RMBRegister = lazy(() => import("@/pages/rmb-register"));
 const RMBStaff = lazy(() => import("@/pages/rmb-staff"));
+const RedirectInvitedInspectorToApp = lazy(
+  () => import("@/pages/invited-inspector-to-app")
+);
 
 const AppRoutes = () => {
   return (
@@ -38,6 +41,14 @@ const AppRoutes = () => {
           element={
             <SuspenseWithLoader>
               <RMBRegister />
+            </SuspenseWithLoader>
+          }
+        />
+        <Route
+          path="/invite-inspector"
+          element={
+            <SuspenseWithLoader>
+              <RedirectInvitedInspectorToApp />
             </SuspenseWithLoader>
           }
         />
