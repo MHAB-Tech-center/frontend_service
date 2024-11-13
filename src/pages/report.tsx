@@ -218,8 +218,8 @@ const ReportPage = () => {
   };
 
   const handleOnExportExcel = () => {
-    // open new tab to this link : home route/reporting/inspections/{planId}
-    const homeRoute = window.location.origin;
+    // open new tab to this link : home {VITE_API_URL}/reporting/inspections/{planId}
+    const homeRoute = import.meta.env.VITE_API_URL;
     window.open(`${homeRoute}/reporting/inspections/${reportId}`, "_blank");
   };
 
