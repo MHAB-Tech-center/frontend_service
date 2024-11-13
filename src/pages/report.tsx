@@ -217,6 +217,12 @@ const ReportPage = () => {
     generatePDF(reportData);
   };
 
+  const handleOnExportExcel = () => {
+    // open new tab to this link : home route/reporting/inspections/{planId}
+    const homeRoute = window.location.origin;
+    window.open(`${homeRoute}/reporting/inspections/${reportId}`, "_blank");
+  };
+
   useEffect(() => {
     fetchReport();
     if (!isAllowed(["report.view"], "and")) {
@@ -280,6 +286,7 @@ const ReportPage = () => {
         <Button onClick={handleOnExport}>
           {isGenerating ? "Generating..." : "Export PDF"}
         </Button>
+        <Button onClick={handleOnExportExcel}>Export Excel</Button>
       </div>
       <Tabs defaultValue="identification" className="">
         <TabsList className="w-full gap-4 justify-start bg-transparent flex-wrap h-fit">
