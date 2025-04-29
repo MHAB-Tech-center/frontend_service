@@ -9,7 +9,8 @@ export default defineConfig({
     host: true,
   },
   preview: {
-    allowedHosts: true
+    port: 5173,
+    host: true,
   },
   resolve: {
     alias: {
