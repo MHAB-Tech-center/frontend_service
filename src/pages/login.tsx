@@ -31,8 +31,8 @@ export default function EnhancedLoginForm() {
     try {
       setLoading(true);
       await login(email, password);
-      toast.success("OTP sent to your email");
-      setShowOtpForm(true);
+      // toast.success("OTP sent to your email");
+      // setShowOtpForm(true);
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
@@ -46,7 +46,7 @@ export default function EnhancedLoginForm() {
       setLoading(true);
       await verifyOTP(email, password, Number(otp));
     } catch (error) {
-      toast.error("2 "+getErrorMessage(error));
+      toast.error("2 " + getErrorMessage(error));
     } finally {
       setLoading(false);
     }

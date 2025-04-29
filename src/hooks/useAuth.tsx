@@ -36,9 +36,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loginUser = async (email: string, password: string) => {
     setLoading(true);
     try {
-      console.log("loginUser", email, password);
+      // console.log("loginUser", email, password);
       const { data: response } = await login(email, password);
       console.log(import.meta.env.DEV && response);
+      Cookies.set("token", response.data.data.access);
+      localStorage.setItem(
+        import.meta.env.VITE_LOCAL_STORAGE_PREFIX,
+        JSON.stringify(response.data.data.user)
+      );
+      setUser(response.data.data.user);
+      setIsAuthenticated(true);
+      toast.success("Login successful");
+      window.location.href = "/";
     } catch (error: any) {
       console.log(import.meta.env.DEV && error);
       // toast.error(getErrorMessage(error));
@@ -68,6 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
   };
+
   const logout = () => {
     Cookies.remove("token");
     localStorage.removeItem(import.meta.env.VITE_LOCAL_STORAGE_PREFIX);
@@ -76,9 +86,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = "/login";
   };
 
-  const isAllowed = (permissions: string | string[], logic: "and" | "or" = "and") => {
+  const isAllowed = (
+    permissions: string | string[],
+    logic: "and" | "or" = "and"
+  ) => {
     if (!user) return false;
-    if (user.roles.some(role => role.role_name === 'ADMIN')) return true;
+    if (user.roles.some((role) => role.role_name === "ADMIN")) return true;
     if (!user.rmbRole) return false;
     permissions = Array.isArray(permissions) ? permissions : [permissions];
     const userPermissions = user.rmbRole.systemFeatures.split(",");

@@ -92,7 +92,7 @@ export default function MainAppShell() {
   const { onLoad } = useOnLoad();
 
   useEffect(() => {
-    console.log('user', user)
+    console.log("user", user);
     if (isAuthenticated === false) {
       if (import.meta.env.VITE_APP_FORCE_LOGIN === "true" || !user)
         window.location.href = "/login";
@@ -122,7 +122,11 @@ export default function MainAppShell() {
           </Button>
         </div>
         <Sidebar
-          items={sidebarItems.filter((item) => item.permissions.includes('any') || isAllowed(item.permissions, "or"))}
+          items={sidebarItems.filter(
+            (item) =>
+              item.permissions.includes("any") ||
+              isAllowed(item.permissions, "or")
+          )}
         />
       </aside>
 
@@ -148,7 +152,7 @@ export default function MainAppShell() {
                 <DropdownMenuTrigger asChild>
                   <div className="flex flex-col gap-0 cursor-pointer">
                     <div className="text-sm font-semibold">
-                      {user?.rmbRole?.rtbRoleName ?? 'RMB'}
+                      {user?.rmbRole?.rtbRoleName ?? "RMB"}
                     </div>
                     <div className="text-xs text-gray-500">{user?.email}</div>
                   </div>
